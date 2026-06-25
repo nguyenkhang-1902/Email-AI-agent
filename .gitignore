@@ -7,3 +7,9 @@ __pycache__/
 .env
 credentials.json
 token.json
+
+thread_memory.json
+
+# Cấu hình IDE rác
+.vscode/
+.idea/
