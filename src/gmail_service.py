@@ -10,10 +10,16 @@ from google.oauth2.credentials import Credentials
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow, WSGITimeoutError
 from googleapiclient.discovery import build
+from datetime import datetime
+
+# Module-level service references
+_gmail_service: Any | None = None
+_calendar_service: Any | None = None
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.compose",
     "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/calendar",
 ]
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -51,7 +57,11 @@ def get_gmail_service() -> Any:
 
             _save_token(creds)
 
-        return build("gmail", "v1", credentials=creds)
+        global _gmail_service, _calendar_service
+        _gmail_service = build("gmail", "v1", credentials=creds)
+        _calendar_service = build("calendar", "v3", credentials=creds)
+
+        return _gmail_service
 
     except FileNotFoundError as exc:
         raise RuntimeError(
@@ -139,3 +149,124 @@ def _run_flow_with_retries(flow: InstalledAppFlow) -> Credentials:
         "Try setting environment variable `GMAIL_OAUTH_PORT`, increasing `GMAIL_AUTH_TIMEOUT`, "
         "or running in an environment with a browser available."
     ) from last_exc
+
+
+# ============================================================================
+# GOOGLE CALENDAR API FUNCTIONS
+# ============================================================================
+def get_calendar_service() -> Any:
+    """Return the authenticated Calendar API service object.
+    
+    Ensures get_gmail_service() has been called first to initialize the services.
+    
+    Returns:
+        The Google Calendar v3 service object.
+        
+    Raises:
+        RuntimeError: If calendar service is not initialized.
+    """
+    global _calendar_service
+    
+    if _calendar_service is None:
+        # Initialize by calling get_gmail_service() first
+        get_gmail_service()
+    
+    if _calendar_service is None:
+        raise RuntimeError("Calendar service failed to initialize.")
+    
+    return _calendar_service
+
+
+def check_calendar_busy(start_iso: str, end_iso: str) -> bool:
+    """Check if the calendar has conflicting events within a time range.
+    
+    Queries the primary calendar for events overlapping the specified time range.
+    Ignores all-day events and focuses on time-specific conflicts.
+    
+    Args:
+        start_iso: Start time in ISO 8601 format (e.g., '2026-06-25T14:00:00+07:00')
+        end_iso: End time in ISO 8601 format (e.g., '2026-06-25T15:00:00+07:00')
+    
+    Returns:
+        True if there are conflicting events (busy), False if free.
+        
+    Raises:
+        RuntimeError: If calendar API call fails.
+    """
+    try:
+        calendar_service = get_calendar_service()
+        
+        # Query the primary calendar for events in the time range
+        events_result = calendar_service.events().list(
+            calendarId="primary",
+            timeMin=start_iso,
+            timeMax=end_iso,
+            singleEvents=True,
+            orderBy="startTime",
+            showDeleted=False,
+        ).execute()
+        
+        events = events_result.get("items", [])
+        
+        # Filter out all-day events and check for actual time conflicts
+        busy_events = [
+            event for event in events
+            if "start" in event and "end" in event
+            and event["start"].get("dateTime") is not None
+            and event["end"].get("dateTime") is not None
+        ]
+        
+        return len(busy_events) > 0
+        
+    except Exception as exc:
+        raise RuntimeError(f"Failed to check calendar availability: {str(exc)}") from exc
+
+
+def create_calendar_event(summary: str, start_iso: str, end_iso: str, description: str = "") -> dict[str, Any]:
+    """Create a new event in the primary Google Calendar.
+    
+    Inserts a new event with the specified details and returns the created event.
+    
+    Args:
+        summary: Event title/summary
+        start_iso: Start time in ISO 8601 format (e.g., '2026-06-25T14:00:00+07:00')
+        end_iso: End time in ISO 8601 format (e.g., '2026-06-25T15:00:00+07:00')
+        description: Optional event description
+    
+    Returns:
+        Dictionary containing the created event details, including:
+        - id: Event ID
+        - htmlLink: URL to the event
+        - start, end: Timestamp information
+        - summary: The event title
+    
+    Raises:
+        RuntimeError: If event creation fails.
+    """
+    try:
+        calendar_service = get_calendar_service()
+        
+        event_body = {
+            "summary": summary,
+            "start": {
+                "dateTime": start_iso,
+            },
+            "end": {
+                "dateTime": end_iso,
+            },
+        }
+        
+        # Add description if provided
+        if description:
+            event_body["description"] = description
+        
+        # Insert the event into the primary calendar
+        event = calendar_service.events().insert(
+            calendarId="primary",
+            body=event_body,
+        ).execute()
+        
+        return event
+        
+    except Exception as exc:
+        raise RuntimeError(f"Failed to create calendar event: {str(exc)}") from exc

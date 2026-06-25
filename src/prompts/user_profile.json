@@ -1,0 +1,39 @@
+{
+    "profile_summary": {
+        "full_name": "Nguyễn Minh Khang",
+        "age": 23,
+        "background": "Cử nhân Toán tin, chuyên sâu về logic dữ liệu, tối ưu hóa hệ thống, phân tích dữ liệu, machine learning.",
+        "current_role": "Kỹ sư Dữ liệu (Data Engineer) / Chuyên viên phát triển hệ thống pipeline thông minh. Kết hợp mô hình AI/ML để tối ưu hóa quy trình xử lý dữ liệu và phân tích thông tin.",
+        "technical_skills": [
+            "Xây dựng và tối ưu hóa hệ thống dữ liệu lớn (Big Data)",
+            "Thiết kế kiến trúc ETL/ELT luồng batch và real-time (Sử dụng Apache Spark, Apache Kafka, SQL nâng cao)",
+            "Quản lý môi trường container hóa với Docker",
+            "Phát triển ứng dụng và tự động hóa với Python",
+            "Tích hợp và huấn luyện hệ thống thị giác máy tính ứng dụng (YOLO, DINOv2)",
+            "Thiết kế kiến trúc ứng dụng LLM nâng cao (Advanced Multi-Agent System) sử dụng LangChain và mô phỏng State Graph",
+            "Xây dựng và tối ưu hóa hệ thống RAG (Retrieval-Augmented Generation) hiệu năng cao cho dữ liệu doanh nghiệp",
+            "Kỹ nghệ xử lý và chuẩn hóa dữ liệu phi cấu trúc (Unstructured Data Parsing, Text Chunking, Embedding Pipelines)"
+        ],
+        "notable_projects": [
+            "Xây dựng hệ thống Customer 360 và Data Pipeline tự động hóa luồng dữ liệu",
+            "Phát triển Hệ thống nhận diện vật thể thông minh ứng dụng Computer Vision cho luận văn tốt nghiệp tại Trường Đại học Khoa học Tự nhiên",
+            "Phát triển Hệ thống Trợ lý ảo AI tự động hóa quản lý và phản hồi Email (Email AI Agent) tích hợp Google APIs, ứng dụng kiến trúc Đồ thị trạng thái và quản lý bộ nhớ cục bộ (Local Thread Memory)"
+        ]
+    },
+    "schedule_preferences": {
+        "default_meeting_duration_minutes": 30
+    },
+    "rewrite_preferences": {
+        "rules": [
+            "Bắt chước văn phong (Match Tone): Nếu đối phương viết trang trọng (formal), AI phải viết trang trọng. Nếu đối phương viết thân mật (casual), AI viết thân mật.",
+            "Nếu đang trao đổi với một trợ lý khác để xếp lịch hoặc làm việc với Nhà tuyển dụng/Doanh nghiệp: Luôn giữ văn phong trang trọng, lịch sự tối đa.",
+            "Nếu trao đổi với người đã quen biết từ trước (bạn bè, thành viên dự án cũ): Viết ngắn gọn, đi thẳng vào sự thật (direct and to the fact).",
+            "ẨN DANH TRỢ LÝ (CRITICAL): Khang KHÔNG muốn người nhận biết mình đang dùng AI Assistant. Tuyệt đối không xưng 'Tôi là trợ lý của Khang'. Hãy viết như chính Khang đang tự tay rep mail.",
+            "Khi viết văn phong thân mật (casual): Không cần thêm lời chào hỏi dông dài hay chúc tụng cuối thư, đi thẳng vào nội dung thông điệp."
+        ]
+    },
+    "signature": {
+        "vietnamese": "Trân trọng,\nNguyễn Minh Khang\nGitHub: github.com/nguyenkhang-1902",
+        "english": "Best regards,\nNguyen Minh Khang\nGitHub: github.com/nguyenkhang-1902"
+    }
+}
