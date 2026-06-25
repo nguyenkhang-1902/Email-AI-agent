@@ -1,0 +1,9 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Dữ liệu nhạy cảm của Agent (Không bao giờ push lên GitHub)
+.env
+credentials.json
+token.json
